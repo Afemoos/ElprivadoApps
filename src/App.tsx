@@ -235,7 +235,8 @@ export default function SpotifyTracker() {
   }
 
   return (
-    <div className="max-w-md mx-auto h-screen flex flex-col bg-gray-50 font-sans">
+    // CORRECCIÓN: Añadido 'relative' aquí para que el botón flotante se quede dentro de la app
+    <div className="max-w-md mx-auto h-screen flex flex-col bg-gray-50 font-sans relative">
       {/* Header */}
       <header className="bg-gray-900 text-white p-4 pt-6 shadow-lg z-10 flex justify-between items-center">
         <div className="w-6"></div>
@@ -294,32 +295,6 @@ export default function SpotifyTracker() {
               <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-green-50 rounded-full text-green-700 transition-colors"><ChevronLeft className="w-6 h-6" /></button>
               <h2 className="text-xl font-bold text-gray-800 capitalize flex items-center gap-2"><Calendar className="w-5 h-5 text-green-600" /> {monthName}</h2>
               <button onClick={() => changeMonth(1)} className="p-2 hover:bg-green-50 rounded-full text-green-700 transition-colors"><ChevronRight className="w-6 h-6" /></button>
-            </div>
-
-            {/* BOTÓN FLOTANTE DE WHATSAPP */}
-            <div className="fixed bottom-24 right-6 z-30">
-               {showWhatsAppConfirm ? (
-                 <div className="bg-white p-4 rounded-2xl shadow-2xl border border-green-200 flex flex-col gap-3 w-64 animate-in slide-in-from-bottom-5 mb-4">
-                    <div className="text-gray-800 font-medium">
-                       <p>¿Enviar recordatorio?</p>
-                       <p className="text-xs text-gray-500 italic mt-1">"bueno, que, no van a pagar o que?"</p>
-                    </div>
-                    <div className="flex gap-2">
-                       <button onClick={() => setShowWhatsAppConfirm(false)} className="flex-1 py-2 bg-gray-100 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-200">Cancelar</button>
-                       <button onClick={sendWhatsAppNotice} className="flex-1 py-2 bg-green-500 text-white rounded-lg text-sm font-bold hover:bg-green-600 flex items-center justify-center gap-1">
-                          <Send className="w-4 h-4" /> Enviar
-                       </button>
-                    </div>
-                 </div>
-               ) : (
-                 <button 
-                   onClick={() => setShowWhatsAppConfirm(true)}
-                   className="bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-110 flex items-center gap-2 font-bold border-4 border-white"
-                 >
-                   <MessageCircle className="w-6 h-6" />
-                   <span className="hidden sm:inline">Enviar Aviso</span>
-                 </button>
-               )}
             </div>
 
             <div className="grid gap-4">
@@ -409,6 +384,34 @@ export default function SpotifyTracker() {
           </div>
         )}
       </main>
+
+      {/* BOTÓN FLOTANTE DE WHATSAPP (AQUÍ ESTÁ LA CORRECCIÓN: Fuera del scroll, dentro del relative) */}
+      {activeTab === 1 && (
+        <div className="absolute bottom-28 right-4 z-50">
+            {showWhatsAppConfirm ? (
+              <div className="bg-white p-4 rounded-2xl shadow-2xl border border-green-200 flex flex-col gap-3 w-64 animate-in slide-in-from-bottom-5 mb-4">
+                <div className="text-gray-800 font-medium">
+                    <p>¿Enviar recordatorio?</p>
+                    <p className="text-xs text-gray-500 italic mt-1">"bueno, que, no van a pagar o que?"</p>
+                </div>
+                <div className="flex gap-2">
+                    <button onClick={() => setShowWhatsAppConfirm(false)} className="flex-1 py-2 bg-gray-100 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-200">Cancelar</button>
+                    <button onClick={sendWhatsAppNotice} className="flex-1 py-2 bg-green-500 text-white rounded-lg text-sm font-bold hover:bg-green-600 flex items-center justify-center gap-1">
+                      <Send className="w-4 h-4" /> Enviar
+                    </button>
+                </div>
+              </div>
+            ) : (
+              <button 
+                onClick={() => setShowWhatsAppConfirm(true)}
+                className="bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-110 flex items-center gap-2 font-bold border-4 border-white"
+              >
+                <MessageCircle className="w-6 h-6" />
+                <span>Enviar Aviso</span> {/* CORRECCIÓN: Texto siempre visible */}
+              </button>
+            )}
+        </div>
+      )}
 
       {/* Tabs Inferiores */}
       <nav className="bg-white border-t border-gray-200 flex justify-around p-2 pb-6 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-20">
