@@ -65,18 +65,15 @@ export default function SpotifyTracker() {
         )}
 
         {activeTab === 1 && (
-          <>
-            <PaymentList
-              members={members}
-              payments={payments}
-              currentDate={currentDate}
-              onChangeMonth={changeMonth}
-              onMarkAsPaid={markAsPaid}
-              onUndoPayment={undoPayment}
-              isGuest={isGuest}
-            />
-            {!isGuest && <WhatsAppButton />}
-          </>
+          <PaymentList
+            members={members}
+            payments={payments}
+            currentDate={currentDate}
+            onChangeMonth={changeMonth}
+            onMarkAsPaid={markAsPaid}
+            onUndoPayment={undoPayment}
+            isGuest={isGuest}
+          />
         )}
 
         {activeTab === 2 && (
@@ -91,6 +88,8 @@ export default function SpotifyTracker() {
           />
         )}
       </main>
+
+      {activeTab === 1 && !isGuest && <WhatsAppButton />}
 
       <nav className="bg-gray-900/90 backdrop-blur-lg border-t border-white/10 flex justify-around p-2 pb-6 shadow-2xl z-20 shrink-0">
         {!isGuest && (

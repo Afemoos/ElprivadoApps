@@ -17,7 +17,7 @@ export function WhatsAppButton() {
     };
 
     return (
-        <div className="absolute bottom-32 right-4 z-50">
+        <div className="absolute bottom-24 right-4 z-50">
             {showConfirm ? (
                 <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-white/20 flex flex-col gap-3 w-64 animate-in slide-in-from-bottom-5 mb-4">
                     <div className="text-white font-medium">
