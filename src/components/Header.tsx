@@ -61,7 +61,7 @@ export function Header({ user, onLogout, requests = [], onAcceptRequest, onRejec
                         </button>
 
                         {showNotifications && (
-                            <div className="absolute right-0 top-full mt-2 w-80 bg-gray-800 border border-white/10 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                            <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-gray-800 border border-white/10 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                                 <div className="p-3 border-b border-white/10 bg-gray-900/50">
                                     <h3 className="font-bold text-white text-sm">Solicitudes ({pendingRequests.length})</h3>
                                 </div>
