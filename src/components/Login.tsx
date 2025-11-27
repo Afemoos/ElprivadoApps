@@ -159,7 +159,6 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onGuestLogin, memb
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 w-full max-w-md shadow-2xl border border-white/20">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-white mb-2">Bienvenido</h1>
-                    <h1 className="text-3xl font-bold text-white mb-2">Bienvenido</h1>
                     <p className="text-gray-400">Ingresa tus credenciales para continuar</p>
                 </div>
 
