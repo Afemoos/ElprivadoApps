@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Lock, User, ArrowRight, AlertCircle, UserCheck } from 'lucide-react';
+import { Eye, EyeOff, Lock, User, ArrowRight, AlertCircle, UserCheck, X, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Member, PaymentData } from '../types';
 
 interface LoginProps {
     onLoginSuccess: () => void;
     onGuestLogin: () => void;
+    members: Member[];
+    payments: Record<string, PaymentData>;
 }
 
-export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onGuestLogin }) => {
+export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onGuestLogin, members, payments }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(false);
+    const [showMemberSelection, setShowMemberSelection] = useState(false);
+    const [modalConfig, setModalConfig] = useState<{ type: 'success' | 'warning' | null, message: string }>({ type: null, message: '' });
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -26,6 +31,36 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onGuestLogin }) =>
         setError(false);
         setUsername('');
         setPassword('');
+    };
+
+    const handleGuestClick = () => {
+        setShowMemberSelection(true);
+    };
+
+    const handleMemberSelect = (memberId: string) => {
+        const currentDate = new Date();
+        const month = currentDate.getMonth() + 1;
+        const year = currentDate.getFullYear();
+        const key = `${memberId}_${year}-${month}`;
+
+        const isPaid = !!payments[key];
+
+        if (isPaid) {
+            setModalConfig({
+                type: 'success',
+                message: 'Felicitaciones, estas al dia con tu obligacion'
+            });
+        } else {
+            setModalConfig({
+                type: 'warning',
+                message: 'OJO, Parece que sos un malapaga. Ten cautela o seras reportado ante las centrales de riesgo'
+            });
+        }
+    };
+
+    const handleModalClose = () => {
+        setModalConfig({ type: null, message: '' });
+        onGuestLogin();
     };
 
     if (error) {
@@ -45,6 +80,64 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onGuestLogin }) =>
                     >
                         Intentar nuevamente
                     </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (modalConfig.type) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 p-4 z-50">
+                <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 w-full max-w-md shadow-2xl border border-white/20 text-center animate-in fade-in zoom-in duration-300 relative">
+                    <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 ${modalConfig.type === 'success' ? 'bg-green-500/20' : 'bg-yellow-500/20'}`}>
+                        {modalConfig.type === 'success' ? (
+                            <CheckCircle className="w-10 h-10 text-green-500" />
+                        ) : (
+                            <AlertTriangle className="w-10 h-10 text-yellow-500" />
+                        )}
+                    </div>
+                    <h2 className={`text-2xl font-bold mb-4 ${modalConfig.type === 'success' ? 'text-green-400' : 'text-yellow-400'}`}>
+                        {modalConfig.type === 'success' ? '¡Excelente!' : '¡Atención!'}
+                    </h2>
+                    <p className="text-white text-lg mb-8 leading-relaxed">
+                        {modalConfig.message}
+                    </p>
+                    <button
+                        onClick={handleModalClose}
+                        className="w-full bg-white text-gray-900 font-bold py-3 px-4 rounded-xl hover:bg-gray-100 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg"
+                    >
+                        Continuar
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (showMemberSelection) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 p-4">
+                <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 w-full max-w-md shadow-2xl border border-white/20 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-bold text-white">¿Quién eres?</h2>
+                        <button onClick={() => setShowMemberSelection(false)} className="text-gray-400 hover:text-white transition-colors">
+                            <X className="w-6 h-6" />
+                        </button>
+                    </div>
+                    <p className="text-gray-300 mb-6">Selecciona tu nombre para continuar.</p>
+                    <div className="grid grid-cols-1 gap-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                        {members.map(member => (
+                            <button
+                                key={member.id}
+                                onClick={() => handleMemberSelect(member.id)}
+                                className="w-full bg-gray-800/50 hover:bg-green-600/20 border border-gray-700 hover:border-green-500/50 text-white font-medium py-4 px-4 rounded-xl transition-all duration-200 text-left flex items-center gap-3 group"
+                            >
+                                <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
+                                    <User className="w-5 h-5 text-gray-300 group-hover:text-green-400" />
+                                </div>
+                                <span className="text-lg">{member.name}</span>
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
         );
@@ -117,7 +210,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onGuestLogin }) =>
 
                         <button
                             type="button"
-                            onClick={onGuestLogin}
+                            onClick={handleGuestClick}
                             className="w-full bg-gray-700/50 text-gray-300 font-medium py-3 px-4 rounded-xl hover:bg-gray-700 hover:text-white transition-all duration-200 flex items-center justify-center gap-2 border border-gray-600 hover:border-gray-500"
                         >
                             <UserCheck className="w-5 h-5" />
