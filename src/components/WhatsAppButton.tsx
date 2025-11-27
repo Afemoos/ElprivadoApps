@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { MessageCircle, Send } from 'lucide-react';
 
 interface WhatsAppButtonProps {
@@ -7,6 +7,23 @@ interface WhatsAppButtonProps {
 
 export function WhatsAppButton({ className = "absolute bottom-24 right-4" }: WhatsAppButtonProps) {
     const [showConfirm, setShowConfirm] = useState(false);
+    const confirmRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (confirmRef.current && !confirmRef.current.contains(event.target as Node)) {
+                setShowConfirm(false);
+            }
+        }
+
+        if (showConfirm) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showConfirm]);
 
     const sendWhatsAppNotice = () => {
         const message = `🚨⚠️
@@ -23,7 +40,7 @@ export function WhatsAppButton({ className = "absolute bottom-24 right-4" }: Wha
     return (
         <div className={`${className} z-50`}>
             {showConfirm ? (
-                <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-white/20 flex flex-col gap-3 w-64 animate-in slide-in-from-bottom-5 mb-4">
+                <div ref={confirmRef} className="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-white/20 flex flex-col gap-3 w-64 animate-in slide-in-from-bottom-5 mb-4">
                     <div className="text-white font-medium">
                         <p>¿Enviar recordatorio?</p>
                         <p className="text-xs text-gray-300 italic mt-1 whitespace-pre-line">
