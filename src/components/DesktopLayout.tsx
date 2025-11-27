@@ -1,4 +1,4 @@
-import { Users, DollarSign, List, LogOut } from 'lucide-react';
+import { Users, DollarSign, List } from 'lucide-react';
 import { Header } from './Header';
 import { MemberManagement } from './MemberManagement';
 import { PaymentList } from './PaymentList';
