@@ -1,4 +1,4 @@
-import { SpotifyApp } from '../components/SpotifyApp';
+import { lazy } from 'react';
 
 export interface AppConfig {
     id: string;
@@ -14,6 +14,6 @@ export const apps: AppConfig[] = [
         name: 'Spotify Familiar',
         description: 'Gestión de pagos y miembros del plan familiar de Spotify.',
         icon: '/spotify-icon.jpg',
-        component: SpotifyApp
+        component: lazy(() => import('../components/SpotifyApp').then(module => ({ default: module.SpotifyApp })))
     }
 ];

@@ -12,7 +12,7 @@ export function Hub({ onSelectApp }: HubProps) {
             <div className="max-w-4xl w-full space-y-12">
                 <div className="text-center space-y-4 animate-in fade-in slide-in-from-bottom-5 duration-700">
                     <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-                        Bienvenido
+                        El Privado Apps
                     </h1>
                     <p className="text-gray-400 text-lg md:text-xl">
                         Selecciona una aplicación para comenzar
@@ -54,7 +54,7 @@ export function Hub({ onSelectApp }: HubProps) {
             </div>
 
             <footer className="fixed bottom-6 text-center text-gray-600 text-xs">
-                &copy; {new Date().getFullYear()} Darwin's Suite
+                &copy; {new Date().getFullYear()} El Privado Team
             </footer>
         </div>
     );
