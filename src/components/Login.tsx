@@ -48,7 +48,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onGuestLogin, memb
         if (isPaid) {
             setModalConfig({
                 type: 'success',
-                message: 'Felicitaciones, estás al día con tu obligación'
+                message: '¡Felicitaciones! Estás al día con tu obligación'
             });
         } else {
             setModalConfig({
@@ -125,7 +125,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onGuestLogin, memb
                     </div>
                     <p className="text-gray-300 mb-6">Selecciona tu nombre para continuar.</p>
                     <div className="grid grid-cols-1 gap-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                        {members.map(member => (
+                        {members.map((member: Member) => (
                             <button
                                 key={member.id}
                                 onClick={() => handleMemberSelect(member.id)}
@@ -161,7 +161,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onGuestLogin, memb
                             <input
                                 type="text"
                                 value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
                                 className="block w-full pl-10 pr-3 py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all duration-200"
                                 placeholder="Ingresa tu usuario"
                                 required
@@ -178,7 +178,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onGuestLogin, memb
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                                 className="block w-full pl-10 pr-12 py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all duration-200"
                                 placeholder="••••••••"
                                 required

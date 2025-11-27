@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Users, UserPlus, Trash2 } from 'lucide-react';
 import { Member } from '../types';
 
@@ -32,10 +32,10 @@ export function MemberManagement({ members, onAddMember, onRemoveMember }: Membe
                 <input
                     type="text"
                     value={newMemberName}
-                    onChange={(e) => setNewMemberName(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMemberName(e.target.value)}
                     placeholder="Nuevo integrante..."
                     className="flex-1 p-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-500 shadow-sm focus:ring-2 focus:ring-green-500/50 focus:border-green-500 outline-none transition-all"
-                    onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && handleAdd()}
                 />
                 <button
                     onClick={handleAdd}

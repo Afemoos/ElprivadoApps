@@ -1,4 +1,5 @@
 import { Users, DollarSign, List } from 'lucide-react';
+import { User } from 'firebase/auth';
 import { Header } from './Header';
 import { MemberManagement } from './MemberManagement';
 import { PaymentList } from './PaymentList';
@@ -7,7 +8,7 @@ import { WhatsAppButton } from './WhatsAppButton';
 import { Member, PaymentData } from '../types';
 
 interface MobileLayoutProps {
-    user: any;
+    user: User | null;
     members: Member[];
     payments: Record<string, PaymentData>;
     activeTab: number;
