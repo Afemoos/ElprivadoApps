@@ -17,3 +17,10 @@ export interface ReportRow {
     date: string | null;
     isExMember: boolean;
 }
+
+export interface Request {
+    id: string;
+    name: string;
+    createdAt: number;
+    status: 'pending' | 'accepted' | 'rejected';
+}

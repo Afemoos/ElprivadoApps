@@ -5,7 +5,7 @@ import { MemberManagement } from './MemberManagement';
 import { PaymentList } from './PaymentList';
 import { HistoryReport } from './HistoryReport';
 import { WhatsAppButton } from './WhatsAppButton';
-import { Member, PaymentData } from '../types';
+import { Member, PaymentData, Request } from '../types';
 
 interface DesktopLayoutProps {
     user: User | null;
@@ -23,6 +23,9 @@ interface DesktopLayoutProps {
     deleteHistorical: (key: string) => Promise<void>;
     isGuest: boolean;
     onLogout: () => void;
+    requests: Request[];
+    onAcceptRequest: (request: Request) => Promise<void>;
+    onRejectRequest: (requestId: string) => Promise<void>;
 }
 
 export function DesktopLayout({
@@ -40,7 +43,10 @@ export function DesktopLayout({
     undoPayment,
     deleteHistorical,
     isGuest,
-    onLogout
+    onLogout,
+    requests,
+    onAcceptRequest,
+    onRejectRequest
 }: DesktopLayoutProps) {
     return (
         <div className="flex h-screen bg-gradient-to-br from-gray-900 to-gray-800 font-sans text-white overflow-hidden">
@@ -91,7 +97,13 @@ export function DesktopLayout({
 
             {/* Main Content */}
             <main className="flex-1 flex flex-col relative overflow-hidden">
-                <Header user={user} onLogout={onLogout} />
+                <Header
+                    user={user}
+                    onLogout={onLogout}
+                    requests={requests}
+                    onAcceptRequest={onAcceptRequest}
+                    onRejectRequest={onRejectRequest}
+                />
 
                 <div className="flex-1 overflow-y-auto p-8">
                     <div className="max-w-5xl mx-auto">

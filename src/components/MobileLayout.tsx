@@ -5,7 +5,7 @@ import { MemberManagement } from './MemberManagement';
 import { PaymentList } from './PaymentList';
 import { HistoryReport } from './HistoryReport';
 import { WhatsAppButton } from './WhatsAppButton';
-import { Member, PaymentData } from '../types';
+import { Member, PaymentData, Request } from '../types';
 
 interface MobileLayoutProps {
     user: User | null;
@@ -23,6 +23,9 @@ interface MobileLayoutProps {
     deleteHistorical: (key: string) => Promise<void>;
     isGuest: boolean;
     onLogout: () => void;
+    requests?: Request[];
+    onAcceptRequest?: (request: Request) => Promise<void>;
+    onRejectRequest?: (requestId: string) => Promise<void>;
 }
 
 export function MobileLayout({
@@ -40,11 +43,20 @@ export function MobileLayout({
     undoPayment,
     deleteHistorical,
     isGuest,
-    onLogout
+    onLogout,
+    requests,
+    onAcceptRequest,
+    onRejectRequest
 }: MobileLayoutProps) {
     return (
         <div className="max-w-md mx-auto h-[100dvh] flex flex-col bg-gradient-to-br from-gray-900 to-gray-800 font-sans relative overflow-hidden text-white">
-            <Header user={user} onLogout={onLogout} />
+            <Header
+                user={user}
+                onLogout={onLogout}
+                requests={requests}
+                onAcceptRequest={onAcceptRequest}
+                onRejectRequest={onRejectRequest}
+            />
 
             <main className="flex-1 overflow-y-auto p-4 relative">
                 {activeTab === 0 && !isGuest && (
