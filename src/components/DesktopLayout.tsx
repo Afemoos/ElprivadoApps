@@ -52,10 +52,10 @@ export function DesktopLayout({
         <div className="flex h-screen bg-gradient-to-br from-gray-900 to-gray-800 font-sans text-white overflow-hidden">
             {/* Sidebar */}
             <aside className="w-64 bg-gray-900/90 backdrop-blur-xl border-r border-white/10 flex flex-col shrink-0 z-20">
-                <div className="p-6 border-b border-white/10">
-                    <h1 className="text-2xl font-bold flex items-center gap-2 text-white">
+                <div className="p-4 border-b border-white/10">
+                    <h1 className="text-lg font-bold flex items-center gap-2 text-white">
                         <span className="bg-green-500/20 p-2 rounded-lg border border-green-500/30">
-                            <DollarSign className="w-6 h-6 text-green-400" />
+                            <DollarSign className="w-5 h-5 text-green-400" />
                         </span>
                         Spotify
                     </h1>
@@ -103,6 +103,7 @@ export function DesktopLayout({
                     requests={requests}
                     onAcceptRequest={onAcceptRequest}
                     onRejectRequest={onRejectRequest}
+                    isGuest={isGuest}
                 />
 
                 <div className="flex-1 overflow-y-auto p-8">

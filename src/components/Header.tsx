@@ -1,5 +1,5 @@
 import { LogOut, User as UserIcon, Bell, Check, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { User } from 'firebase/auth';
 import { Request } from '../types';
 
@@ -9,12 +9,27 @@ interface HeaderProps {
     requests?: Request[];
     onAcceptRequest?: (request: Request) => Promise<void>;
     onRejectRequest?: (requestId: string) => Promise<void>;
+    isGuest?: boolean;
 }
 
-export function Header({ user, onLogout, requests = [], onAcceptRequest, onRejectRequest }: HeaderProps) {
+export function Header({ user, onLogout, requests = [], onAcceptRequest, onRejectRequest, isGuest = false }: HeaderProps) {
     const [showNotifications, setShowNotifications] = useState(false);
     const pendingRequests = requests.filter(r => r.status === 'pending');
     const hasNotifications = pendingRequests.length > 0;
+    const notificationRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+                setShowNotifications(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
         <header className="bg-gray-900/90 backdrop-blur-xl border-b border-white/10 p-4 flex justify-between items-center sticky top-0 z-30 shadow-lg">
@@ -27,14 +42,14 @@ export function Header({ user, onLogout, requests = [], onAcceptRequest, onRejec
                         {user ? 'Panel de Control' : 'Bienvenido'}
                     </h2>
                     <p className="text-xs text-gray-400">
-                        {user ? 'Administrador' : 'Visitante'}
+                        {user && !isGuest ? 'Administrador' : 'Visitante'}
                     </p>
                 </div>
             </div>
 
             <div className="flex items-center gap-3">
-                {user && (
-                    <div className="relative">
+                {user && !isGuest && (
+                    <div className="relative" ref={notificationRef}>
                         <button
                             onClick={() => setShowNotifications(!showNotifications)}
                             className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors relative"
