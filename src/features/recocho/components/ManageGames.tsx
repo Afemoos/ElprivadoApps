@@ -124,6 +124,17 @@ export function ManageGames({ activeGames, myGames, onJoinGame, onBack }: Manage
                                     {isJoining ? 'Uniéndome...' : 'Unirse'}
                                 </button>
                             </div>
+                            
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    onJoinGame(selectedCode, '', '');
+                                    setShowJoinModal(false);
+                                }}
+                                className="w-full text-center text-sm text-gray-500 hover:text-blue-400 transition-colors mt-2"
+                            >
+                                ¿Ya te has registrado? Sigue adelante
+                            </button>
                         </form>
                     </div>
                 </div>
