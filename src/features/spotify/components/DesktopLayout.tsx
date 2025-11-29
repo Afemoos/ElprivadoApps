@@ -151,6 +151,7 @@ export function DesktopLayout({
                                                     <span className="text-green-400">Pagados</span>
                                                     <span className="font-bold text-green-400 text-xl">
                                                         {members.filter(m => {
+                                                            if (m.isExempt) return false;
                                                             const month = currentDate.getMonth() + 1;
                                                             const year = currentDate.getFullYear();
                                                             const key = `${m.id}_${year}-${month}`;
@@ -162,6 +163,7 @@ export function DesktopLayout({
                                                     <span className="text-red-400">Pendientes</span>
                                                     <span className="font-bold text-red-400 text-xl">
                                                         {members.filter(m => {
+                                                            if (m.isExempt) return false;
                                                             const month = currentDate.getMonth() + 1;
                                                             const year = currentDate.getFullYear();
                                                             const key = `${m.id}_${year}-${month}`;
