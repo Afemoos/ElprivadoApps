@@ -5,6 +5,8 @@ import { apps } from '../../config/apps';
 import { useAuth } from '../../context/AuthContext';
 import { useSpotifyData } from '../spotify/hooks/useSpotifyData';
 import { VisitorRequest } from '../spotify/components/VisitorRequest';
+import { MigrationTool } from '../spotify/components/MigrationTool';
+import { useGroups } from '../../context/GroupContext';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { LogOut, LogIn, X } from 'lucide-react';
@@ -19,9 +21,12 @@ interface LobbyProps {
 export function Lobby({ onSelectApp, onNavigateToAuth }: LobbyProps) {
     const { user, logOut } = useAuth();
     const [showInfoModal, setShowInfoModal] = useState(false);
-    const { members, payments, requestSpot } = useSpotifyData();
+    const { groups, currentGroup, selectGroup, createGroup, isLoading: loadingGroups } = useGroups();
+    const { members, payments, requestSpot } = useSpotifyData(currentGroup?.id);
     const [todaysRoutine, setTodaysRoutine] = useState<string[] | null>(null);
     const [loadingInfo, setLoadingInfo] = useState(false);
+    const [newGroupName, setNewGroupName] = useState('');
+    const [isCreatingGroup, setIsCreatingGroup] = useState(false);
 
     const handleAppClick = (appId: string) => {
         onSelectApp(appId);
@@ -203,52 +208,109 @@ export function Lobby({ onSelectApp, onNavigateToAuth }: LobbyProps) {
             )}
 
             {/* Visitor Request for unlinked users */}
-            {user && !spotifyStatus && (
+            {user && !spotifyStatus && !currentGroup && (
                 <div className="w-full max-w-md mx-auto px-6 mt-8 z-20 relative">
                     <VisitorRequest onRequestSpot={requestSpot} />
                 </div>
             )}
 
+            {/* Migration Tool for Darwin */}
+            <MigrationTool />
+
             <div className="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-4xl mx-auto space-y-12 pb-20">
                 <div className="text-center space-y-4 animate-in fade-in slide-in-from-bottom-5 duration-700">
                     <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-                        Lobby
+                        {currentGroup ? currentGroup.name : 'Lobby'}
                     </h1>
                     <p className="text-gray-400 text-lg md:text-xl">
-                        Selecciona una aplicación para comenzar
+                        {currentGroup ? 'Selecciona una aplicación' : 'Bienvenido a El Privado Apps'}
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {apps.filter(app => !app.hidden).map((app) => (
-                        <Card
-                            key={app.id}
-                            onClick={() => handleAppClick(app.id)}
-                            hoverEffect
-                            color="indigo"
-                            className="group relative cursor-pointer flex flex-col gap-6 animate-in zoom-in-95 duration-500 delay-100 text-left"
-                        >
-                            <div className="w-20 h-20 rounded-2xl overflow-hidden border border-indigo-500/30 group-hover:border-indigo-500/50 transition-all shadow-lg shadow-black/50 flex items-center justify-center bg-slate-800">
-                                <app.icon className="w-10 h-10 text-indigo-500 group-hover:scale-110 transition-transform duration-500" />
+                {/* Group Selection / Creation */}
+                {user && !currentGroup && (
+                    <div className="w-full max-w-2xl mx-auto space-y-8">
+                        {/* Create Group */}
+                        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                            <h3 className="text-xl font-bold text-white mb-4">Crear Nuevo Grupo</h3>
+                            <div className="flex gap-4">
+                                <input
+                                    type="text"
+                                    placeholder="Nombre del grupo (ej. Familia Perez)"
+                                    value={newGroupName}
+                                    onChange={(e) => setNewGroupName(e.target.value)}
+                                    className="flex-1 bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-white"
+                                />
+                                <button
+                                    onClick={async () => {
+                                        if (!newGroupName.trim()) return;
+                                        setIsCreatingGroup(true);
+                                        await createGroup(newGroupName);
+                                        setNewGroupName('');
+                                        setIsCreatingGroup(false);
+                                    }}
+                                    disabled={isCreatingGroup || !newGroupName.trim()}
+                                    className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-xl font-bold transition-colors disabled:opacity-50"
+                                >
+                                    {isCreatingGroup ? 'Creando...' : 'Crear'}
+                                </button>
                             </div>
-                            <div>
-                                <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">{app.name}</h3>
-                                <p className="text-gray-400 text-sm leading-relaxed">
-                                    {app.description}
-                                </p>
-                            </div>
-                            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-indigo-500/0 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </Card>
-                    ))}
-
-                    {/* Placeholder for future apps */}
-                    <Card className="flex flex-col items-center justify-center gap-4 opacity-50 border-dashed hover:opacity-75 transition-opacity duration-300 animate-pulse">
-                        <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
-                            <span className="text-2xl text-gray-600">+</span>
                         </div>
-                        <p className="text-gray-500 text-sm font-medium">Próximamente</p>
-                    </Card>
-                </div>
+
+                        {/* My Groups */}
+                        {groups.length > 0 && (
+                            <div className="space-y-4">
+                                <h3 className="text-xl font-bold text-white">Mis Grupos</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {groups.map(group => (
+                                        <div
+                                            key={group.id}
+                                            onClick={() => selectGroup(group)}
+                                            className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-6 cursor-pointer transition-all group"
+                                        >
+                                            <h4 className="text-lg font-bold text-white group-hover:text-indigo-400 transition-colors">{group.name}</h4>
+                                            <p className="text-gray-400 text-sm">Creado el {new Date(group.createdAt).toLocaleDateString()}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* App Grid - Only show if group selected OR user is visitor (no auth) */}
+                {(!user || currentGroup) && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {apps.filter(app => !app.hidden).map((app) => (
+                            <Card
+                                key={app.id}
+                                onClick={() => handleAppClick(app.id)}
+                                hoverEffect
+                                color="indigo"
+                                className="group relative cursor-pointer flex flex-col gap-6 animate-in zoom-in-95 duration-500 delay-100 text-left"
+                            >
+                                <div className="w-20 h-20 rounded-2xl overflow-hidden border border-indigo-500/30 group-hover:border-indigo-500/50 transition-all shadow-lg shadow-black/50 flex items-center justify-center bg-slate-800">
+                                    <app.icon className="w-10 h-10 text-indigo-500 group-hover:scale-110 transition-transform duration-500" />
+                                </div>
+                                <div>
+                                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">{app.name}</h3>
+                                    <p className="text-gray-400 text-sm leading-relaxed">
+                                        {app.description}
+                                    </p>
+                                </div>
+                                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-indigo-500/0 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </Card>
+                        ))}
+
+                        {/* Placeholder for future apps */}
+                        <Card className="flex flex-col items-center justify-center gap-4 opacity-50 border-dashed hover:opacity-75 transition-opacity duration-300 animate-pulse">
+                            <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
+                                <span className="text-2xl text-gray-600">+</span>
+                            </div>
+                            <p className="text-gray-500 text-sm font-medium">Próximamente</p>
+                        </Card>
+                    </div>
+                )}
             </div>
 
             <footer className="w-full text-center text-gray-600 text-xs py-6">

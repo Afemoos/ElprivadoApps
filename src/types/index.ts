@@ -28,4 +28,11 @@ export interface Request {
     userId?: string;
 }
 
+export interface Group {
+    id: string;
+    ownerId: string;
+    name: string;
+    createdAt: number;
+}
+
 export type UserRole = 'admin' | 'member' | 'visitor';
