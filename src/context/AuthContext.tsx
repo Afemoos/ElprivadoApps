@@ -114,8 +114,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 return 'La contraseña debe tener al menos 6 caracteres.';
             case 'auth/missing-password':
                 return 'Por favor ingresa una contraseña.';
+            case 'auth/invalid-credential':
+                return 'Credenciales inválidas. Verifica tu usuario y contraseña.';
             default:
-                return 'Ocurrió un error. Por favor intenta de nuevo.';
+                return `Ocurrió un error (${errorCode}). Por favor intenta de nuevo.`;
         }
     };
 
