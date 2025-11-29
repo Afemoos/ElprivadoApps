@@ -11,7 +11,7 @@ interface SpotifyAppProps {
 
 export function SpotifyApp({ onBackToHub }: SpotifyAppProps) {
     const { user: globalUser } = useAuth();
-    const { members, payments, addMember, removeMember, markAsPaid, undoPayment, deleteHistorical, requests, acceptRequest, rejectRequest, toggleMemberExempt } = useSpotifyData();
+    const { members, payments, addMember, removeMember, markAsPaid, undoPayment, deleteHistorical, requests, requestSpot, acceptRequest, rejectRequest, toggleMemberExempt } = useSpotifyData();
     const [activeTab, setActiveTab] = useState(1);
     const [currentDate, setCurrentDate] = useState(new Date());
     const isMobile = useIsMobile();
@@ -52,6 +52,7 @@ export function SpotifyApp({ onBackToHub }: SpotifyAppProps) {
         role,
         onLogout: onBackToHub,
         requests,
+        onRequestSpot: requestSpot,
         onAcceptRequest: acceptRequest,
         onRejectRequest: rejectRequest,
         onToggleExempt: toggleMemberExempt

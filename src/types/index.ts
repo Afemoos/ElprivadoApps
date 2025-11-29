@@ -25,6 +25,7 @@ export interface Request {
     name: string;
     createdAt: number;
     status: 'pending' | 'accepted' | 'rejected';
+    userId?: string;
 }
 
 export type UserRole = 'admin' | 'member' | 'visitor';

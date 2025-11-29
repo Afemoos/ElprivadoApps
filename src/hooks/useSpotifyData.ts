@@ -61,10 +61,10 @@ export function useSpotifyData() {
         };
     }, [user]);
 
-    const addMember = async (name: string) => {
+    const addMember = async (name: string, userId?: string) => {
         if (!name.trim() || !user) return;
         const newId = Date.now().toString();
-        const newMember = { name: name.trim(), createdAt: Date.now() };
+        const newMember = { name: name.trim(), createdAt: Date.now(), userId };
         try {
             const docRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'spotify_members', newId);
             await setDoc(docRef, newMember);
@@ -107,7 +107,8 @@ export function useSpotifyData() {
             id: newId,
             name: name.trim(),
             createdAt: Date.now(),
-            status: 'pending'
+            status: 'pending',
+            userId: user.uid
         };
         try {
             const docRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'spotify_requests', newId);
@@ -117,7 +118,7 @@ export function useSpotifyData() {
 
     const acceptRequest = async (request: Request) => {
         try {
-            await addMember(request.name);
+            await addMember(request.name, request.userId);
             const docRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'spotify_requests', request.id);
             await deleteDoc(docRef);
         } catch (e) { console.error(e); throw e; }
