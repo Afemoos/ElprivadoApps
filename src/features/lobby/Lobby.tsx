@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { apps } from '../../config/apps';
 import { useAuth } from '../../context/AuthContext';
-import { useSpotifyData } from '../spotify/hooks/useSpotifyData';
+import { useSpotifyData } from '../../hooks/useSpotifyData';
 import { VisitorRequest } from '../spotify/components/VisitorRequest';
 import { MigrationTool } from '../spotify/components/MigrationTool';
 import { useGroups } from '../../context/GroupContext';

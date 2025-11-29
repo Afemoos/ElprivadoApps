@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useSpotifyData } from './hooks/useSpotifyData';
+import { useSpotifyData } from '../../hooks/useSpotifyData';
 import { useAuth } from '../../context/AuthContext';
+import { useGroups } from '../../context/GroupContext';
 import { MobileLayout } from './components/MobileLayout';
 import { DesktopLayout } from './components/DesktopLayout';
 import { useIsMobile } from '../../hooks/useIsMobile';
@@ -11,7 +12,8 @@ interface SpotifyAppProps {
 
 export function SpotifyApp({ onBackToHub }: SpotifyAppProps) {
     const { user: globalUser } = useAuth();
-    const { members, payments, addMember, removeMember, markAsPaid, undoPayment, deleteHistorical, requests, requestSpot, acceptRequest, rejectRequest, toggleMemberExempt } = useSpotifyData();
+    const { currentGroup } = useGroups();
+    const { members, payments, addMember, removeMember, markAsPaid, undoPayment, deleteHistorical, requests, requestSpot, acceptRequest, rejectRequest, toggleMemberExempt } = useSpotifyData(currentGroup?.id);
     const [activeTab, setActiveTab] = useState(1);
     const [currentDate, setCurrentDate] = useState(new Date());
     const isMobile = useIsMobile();
