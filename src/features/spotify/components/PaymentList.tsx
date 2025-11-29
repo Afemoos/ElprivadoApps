@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Calendar, ChevronLeft, ChevronRight, Users, AlertCircle, Check, RotateCcw, Lock } from 'lucide-react';
-import { Member, PaymentData } from '../types';
+import { Member, PaymentData } from '../../../types';
 
 interface PaymentListProps {
     members: Member[];

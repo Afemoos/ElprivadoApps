@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { Users, UserPlus, Trash2 } from 'lucide-react';
-import { Member } from '../types';
+import { Member } from '../../../types';
 
 interface MemberManagementProps {
     members: Member[];

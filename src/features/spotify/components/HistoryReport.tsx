@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Calendar, ChevronDown, ChevronLeft, ChevronRight, List, Trash2, Lock } from 'lucide-react';
-import { Member, PaymentData, ReportRow } from '../types';
+import { Member, PaymentData, ReportRow } from '../../../types';
 
 interface HistoryReportProps {
     members: Member[];

@@ -1,7 +1,7 @@
 import { LogOut, User as UserIcon, Bell, Check, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { User } from 'firebase/auth';
-import { Request } from '../types';
+import { Request } from '../../../types';
 
 interface HeaderProps {
     user: User | null;

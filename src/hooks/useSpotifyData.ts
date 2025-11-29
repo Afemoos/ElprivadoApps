@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { collection, onSnapshot, doc, setDoc, deleteDoc } from 'firebase/firestore';
-import { signInAnonymously, onAuthStateChanged, User } from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth, db, APP_ID } from '../config/firebase';
 import { Member, PaymentData, Request } from '../types';
 
@@ -12,15 +12,6 @@ export function useSpotifyData() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const initAuth = async () => {
-            try {
-                await signInAnonymously(auth);
-            } catch (error) {
-                console.error("Error de autenticación:", error);
-            }
-        };
-        initAuth();
-
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
         });
@@ -28,7 +19,10 @@ export function useSpotifyData() {
     }, []);
 
     useEffect(() => {
-        if (!user) return;
+        if (!user) {
+            setIsLoading(false);
+            return;
+        }
 
         const membersRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'spotify_members');
         const paymentsRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'spotify_payments');

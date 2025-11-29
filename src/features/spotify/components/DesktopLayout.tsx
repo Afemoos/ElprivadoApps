@@ -5,7 +5,7 @@ import { MemberManagement } from './MemberManagement';
 import { PaymentList } from './PaymentList';
 import { HistoryReport } from './HistoryReport';
 import { WhatsAppButton } from './WhatsAppButton';
-import { Member, PaymentData, Request } from '../types';
+import { Member, PaymentData, Request } from '../../../types';
 
 interface DesktopLayoutProps {
     user: User | null;
@@ -49,7 +49,7 @@ export function DesktopLayout({
     onRejectRequest
 }: DesktopLayoutProps) {
     return (
-        <div className="flex h-screen bg-gradient-to-br from-gray-900 to-gray-800 font-sans text-white overflow-hidden">
+        <div className="flex h-screen bg-gradient-to-br from-black to-gray-900 font-sans text-white overflow-hidden">
             {/* Sidebar */}
             <aside className="w-64 bg-gray-900/90 backdrop-blur-xl border-r border-white/10 flex flex-col shrink-0 z-20">
                 <div className="p-4 border-b border-white/10">

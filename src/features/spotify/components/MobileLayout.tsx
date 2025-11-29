@@ -5,7 +5,7 @@ import { MemberManagement } from './MemberManagement';
 import { PaymentList } from './PaymentList';
 import { HistoryReport } from './HistoryReport';
 import { WhatsAppButton } from './WhatsAppButton';
-import { Member, PaymentData, Request } from '../types';
+import { Member, PaymentData, Request } from '../../../types';
 
 interface MobileLayoutProps {
     user: User | null;
