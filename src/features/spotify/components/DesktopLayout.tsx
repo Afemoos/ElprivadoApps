@@ -107,7 +107,7 @@ export function DesktopLayout({
                     requests={requests}
                     onAcceptRequest={onAcceptRequest}
                     onRejectRequest={onRejectRequest}
-                    isGuest={role === 'visitor'}
+                    role={role}
                 />
 
                 <div className="flex-1 overflow-y-auto p-8">

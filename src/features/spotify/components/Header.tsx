@@ -1,7 +1,7 @@
 import { LogOut, User as UserIcon, Bell, Check, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { User } from 'firebase/auth';
-import { Request } from '../../../types';
+import { Request, UserRole } from '../../../types';
 
 interface HeaderProps {
     user: User | null;
@@ -9,14 +9,15 @@ interface HeaderProps {
     requests?: Request[];
     onAcceptRequest?: (request: Request) => Promise<void>;
     onRejectRequest?: (requestId: string) => Promise<void>;
-    isGuest?: boolean;
+    role?: UserRole;
 }
 
-export function Header({ user, onLogout, requests = [], onAcceptRequest, onRejectRequest, isGuest = false }: HeaderProps) {
+export function Header({ user, onLogout, requests = [], onAcceptRequest, onRejectRequest, role = 'visitor' }: HeaderProps) {
     const [showNotifications, setShowNotifications] = useState(false);
     const pendingRequests = requests.filter(r => r.status === 'pending');
     const hasNotifications = pendingRequests.length > 0;
     const notificationRef = useRef<HTMLDivElement>(null);
+    const isGuest = role === 'visitor';
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -42,7 +43,7 @@ export function Header({ user, onLogout, requests = [], onAcceptRequest, onRejec
                         {user ? (user.displayName || user.email?.split('@')[0]) : 'Bienvenido'}
                     </h2>
                     <p className="text-xs text-gray-400 capitalize">
-                        {user ? (isGuest ? 'Visitante' : 'Administrador') : 'Inicia Sesión'}
+                        {user ? (role === 'visitor' ? 'Visitante' : role === 'admin' ? 'Administrador' : 'Miembro') : 'Inicia Sesión'}
                     </p>
                 </div>
             </div>

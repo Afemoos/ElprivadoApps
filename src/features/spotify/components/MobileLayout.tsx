@@ -58,7 +58,7 @@ export function MobileLayout({
                 requests={requests}
                 onAcceptRequest={onAcceptRequest}
                 onRejectRequest={onRejectRequest}
-                isGuest={role === 'visitor'}
+                role={role}
             />
 
             <main className="flex-1 overflow-y-auto p-4 relative">
