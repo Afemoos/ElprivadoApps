@@ -59,7 +59,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             const mockUser = {
                 uid: 'darwin47-admin-bypass',
                 email: 'darwin47@elprivado.app',
-                displayName: 'Darwin47',
+                displayName: 'Darwin',
                 emailVerified: true,
                 isAnonymous: false,
                 metadata: {},

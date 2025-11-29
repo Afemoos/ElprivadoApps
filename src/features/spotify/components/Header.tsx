@@ -39,10 +39,10 @@ export function Header({ user, onLogout, requests = [], onAcceptRequest, onRejec
                 </div>
                 <div>
                     <h2 className="font-bold text-white text-lg leading-tight">
-                        {user ? 'Panel de Control' : 'Bienvenido'}
+                        {user ? (user.displayName || user.email?.split('@')[0]) : 'Bienvenido'}
                     </h2>
-                    <p className="text-xs text-gray-400">
-                        {user && !isGuest ? 'Administrador' : 'Visitante'}
+                    <p className="text-xs text-gray-400 capitalize">
+                        {user ? (isGuest ? 'Visitante' : 'Administrador') : 'Inicia Sesión'}
                     </p>
                 </div>
             </div>
