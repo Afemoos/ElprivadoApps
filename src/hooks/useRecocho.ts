@@ -20,7 +20,8 @@ export function useRecocho() {
     const [activeGames, setActiveGames] = useState<RecochoGame[]>([]);
     const [currentGame, setCurrentGame] = useState<RecochoGame | null>(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null); // Action errors (create, join, etc)
+    const [loadingError, setLoadingError] = useState<string | null>(null); // Subscription errors
 
     const [myGames, setMyGames] = useState<RecochoGame[]>([]);
 
@@ -47,9 +48,13 @@ export function useRecocho() {
                 ...doc.data()
             })) as RecochoGame[];
             setActiveGames(games);
+            setLoadingError(null);
         }, (err) => {
             console.error("Error fetching games:", err);
-            setError("Error al cargar los partidos");
+            // Only set loading error if we don't have games yet
+            if (activeGames.length === 0) {
+                setLoadingError("Error al cargar los partidos activos");
+            }
         });
 
         return () => unsubscribe();
@@ -239,6 +244,7 @@ export function useRecocho() {
         currentGame,
         loading,
         error,
+        loadingError,
         createGame,
         joinGame,
         addPlayer,

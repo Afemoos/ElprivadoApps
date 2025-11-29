@@ -3,8 +3,6 @@ service cloud.firestore {
   match /databases/{database}/documents {
     
     // Reglas para Spotify App (y otras apps compartidas)
-    // Permite lectura a todos (incluyendo visitantes)
-    // Permite escritura solo a usuarios autenticados
     match /artifacts/{appId}/public/data/{document=**} {
       allow read: if true;
       allow write: if request.auth != null;
@@ -12,8 +10,8 @@ service cloud.firestore {
 
     // Reglas para Invites (Códigos de acceso)
     match /invites/{code} {
-      allow read: if true; // Cualquiera puede buscar un código
-      allow write: if request.auth != null; // Solo autenticados pueden crear códigos (al crear grupo)
+      allow read: if true;
+      allow write: if request.auth != null;
     }
 
     // Reglas para Grupos (Multi-Tenant)
@@ -22,14 +20,13 @@ service cloud.firestore {
       allow read, write: if request.auth.token.email == 'darwin47@elprivado.app';
       
       // Allow migration for the legacy group specifically
-      match /groups/darwin-legacy {
-          allow read, write: if request.auth != null;
-      }
+      // IMPORTANTE: Esto permite que la herramienta de migración funcione
+      allow read, write: if groupId == 'darwin-legacy' && request.auth != null;
 
       // Leer: 
       // 1. Dueño
-      // 2. Miembro (en memberUids o subcolección)
-      // 3. Cualquiera que conozca el ID (para visitantes con código) -> Permitimos GET, pero LIST restringido
+      // 2. Miembro (en memberUids)
+      // 3. Cualquiera que conozca el ID (para visitantes con código) -> Permitimos GET
       allow get: if true; 
       
       allow list: if request.auth != null && (
@@ -39,27 +36,18 @@ service cloud.firestore {
 
       // Crear grupo: Cualquiera autenticado
       allow create: if request.auth != null;
-      // Actualizar/Borrar grupo: Solo el dueño (o admin para updates específicos como unirse)
+      
+      // Actualizar: Dueño, Miembros (limitado), o unirse (modificar memberUids)
       allow update: if request.auth != null && (
         resource.data.ownerId == request.auth.uid ||
-        // Permitir a usuarios añadirse a sí mismos a memberUids si tienen el código (manejado por backend/context)
-        // Por ahora, simplificamos: Update solo dueño o si eres miembro.
-        // La lógica de "Unirse" la haremos añadiendo el UID al array.
         resource.data.memberUids.hasAny([request.auth.uid]) ||
-         // Permitir update si estamos añadiendo nuestro propio UID (Join) - esto es complejo en reglas,
-         // mejor dejar que el dueño o un proceso seguro lo haga, O confiar en que el cliente tiene el ID.
-         // Para simplificar y no bloquear: permitimos update si auth != null. 
-         // ¡CUIDADO! Esto permite a cualquiera editar el grupo si tiene el ID.
-         // Mejor: Solo dueño puede editar metadatos. Miembros solo pueden leer.
-         // Para unirse, usaremos una Cloud Function o un permiso específico?
-         // Solución pragmática: Permitir update de 'memberUids' a cualquiera autenticado (para unirse).
-         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberUids'])
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberUids'])
       );
       
       allow delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
 
       match /members/{memberId} {
-         allow read: if true; // Permitir leer miembros si conoces el grupo (para visitantes)
+         allow read: if true; 
          allow write: if request.auth != null;
       }
       
@@ -74,14 +62,13 @@ service cloud.firestore {
       }
     }
 
-    // Reglas para Rutinas de Gym (Privado por usuario)
-    // Solo el dueño de la cuenta puede leer y escribir su rutina
+    // Reglas para Rutinas de Gym
     match /gym_routines/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Reglas para Recochos (App 3)
-    // Acceso público total requerido por diseño ("no necesitaras tener cuenta")
+    // --- REGLAS PARA RECOCHO (APP 3) ---
+    // Acceso público total para crear y unirse sin cuenta
     match /recochos/{gameId} {
       allow read, write: if true;
     }
