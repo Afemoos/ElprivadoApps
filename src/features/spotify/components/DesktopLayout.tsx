@@ -6,7 +6,6 @@ import { PaymentList } from './PaymentList';
 import { HistoryReport } from './HistoryReport';
 import { WhatsAppButton } from './WhatsAppButton';
 import { Member, PaymentData, Request, UserRole } from '../../../types';
-import { VisitorRequest } from './VisitorRequest';
 
 interface DesktopLayoutProps {
     user: User | null;
@@ -28,7 +27,6 @@ interface DesktopLayoutProps {
     onAcceptRequest: (request: Request) => Promise<void>;
     onRejectRequest: (requestId: string) => Promise<void>;
     onToggleExempt: (id: string, isExempt: boolean) => Promise<void>;
-    onRequestSpot: (name: string) => Promise<void>;
 }
 
 export function DesktopLayout({
@@ -50,8 +48,7 @@ export function DesktopLayout({
     requests,
     onAcceptRequest,
     onRejectRequest,
-    onToggleExempt,
-    onRequestSpot
+    onToggleExempt
 }: DesktopLayoutProps) {
     return (
         <div className="flex h-screen bg-gradient-to-br from-black to-gray-900 font-sans text-white overflow-hidden">
@@ -115,10 +112,6 @@ export function DesktopLayout({
 
                 <div className="flex-1 overflow-y-auto p-8">
                     <div className="max-w-5xl mx-auto">
-                        {role === 'visitor' && (
-                            <VisitorRequest onRequestSpot={onRequestSpot} />
-                        )}
-
                         {activeTab === 0 && role === 'admin' && (
                             <div className="max-w-2xl">
                                 <MemberManagement

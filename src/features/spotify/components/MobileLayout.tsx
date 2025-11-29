@@ -6,7 +6,6 @@ import { PaymentList } from './PaymentList';
 import { HistoryReport } from './HistoryReport';
 import { WhatsAppButton } from './WhatsAppButton';
 import { Member, PaymentData, Request, UserRole } from '../../../types';
-import { VisitorRequest } from './VisitorRequest';
 
 interface MobileLayoutProps {
     user: User | null;
@@ -28,7 +27,6 @@ interface MobileLayoutProps {
     onAcceptRequest?: (request: Request) => Promise<void>;
     onRejectRequest?: (requestId: string) => Promise<void>;
     onToggleExempt: (id: string, isExempt: boolean) => Promise<void>;
-    onRequestSpot: (name: string) => Promise<void>;
 }
 
 export function MobileLayout({
@@ -50,8 +48,7 @@ export function MobileLayout({
     requests,
     onAcceptRequest,
     onRejectRequest,
-    onToggleExempt,
-    onRequestSpot
+    onToggleExempt
 }: MobileLayoutProps) {
     return (
         <div className="max-w-md mx-auto h-[100dvh] flex flex-col bg-gradient-to-br from-gray-900 to-gray-800 font-sans relative overflow-hidden text-white">
@@ -65,10 +62,6 @@ export function MobileLayout({
             />
 
             <main className="flex-1 overflow-y-auto p-4 relative">
-                {role === 'visitor' && (
-                    <VisitorRequest onRequestSpot={onRequestSpot} />
-                )}
-
                 {activeTab === 0 && role === 'admin' && (
                     <MemberManagement
                         members={members}

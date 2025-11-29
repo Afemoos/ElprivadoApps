@@ -32,9 +32,9 @@ export function VisitorRequest({ onRequestSpot }: VisitorRequestProps) {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8 animate-in fade-in slide-in-from-top-5 duration-500">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="text-center md:text-left">
-                    <h3 className="text-xl font-bold text-white mb-2">¿Quieres unirte al Plan Familiar?</h3>
+                    <h3 className="text-xl font-bold text-white mb-2">¿Quieres unirte al Plan Spotify Familiar?</h3>
                     <p className="text-gray-400 text-sm max-w-md">
-                        Envía una solicitud al administrador con tu nombre. Una vez aceptada, podrás crear tu cuenta vinculada.
+                        Envía una solicitud al administrador con tu nombre. Si hay cupo, serás añadido al plan de pagos. Si está lleno, entrarás como VIP.
                     </p>
                 </div>
 

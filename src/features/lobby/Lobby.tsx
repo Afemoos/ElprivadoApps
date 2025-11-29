@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { apps } from '../../config/apps';
 import { useAuth } from '../../context/AuthContext';
 import { useSpotifyData } from '../spotify/hooks/useSpotifyData';
+import { VisitorRequest } from '../spotify/components/VisitorRequest';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { LogOut, LogIn, X } from 'lucide-react';
@@ -18,7 +19,7 @@ interface LobbyProps {
 export function Lobby({ onSelectApp, onNavigateToAuth }: LobbyProps) {
     const { user, logOut } = useAuth();
     const [showInfoModal, setShowInfoModal] = useState(false);
-    const { members, payments } = useSpotifyData();
+    const { members, payments, requestSpot } = useSpotifyData();
     const [todaysRoutine, setTodaysRoutine] = useState<string[] | null>(null);
     const [loadingInfo, setLoadingInfo] = useState(false);
 
@@ -198,6 +199,13 @@ export function Lobby({ onSelectApp, onNavigateToAuth }: LobbyProps) {
                             </div>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Visitor Request for unlinked users */}
+            {user && !spotifyStatus && (
+                <div className="w-full max-w-md mx-auto px-6 mt-8 z-20 relative">
+                    <VisitorRequest onRequestSpot={requestSpot} />
                 </div>
             )}
 

@@ -63,8 +63,19 @@ export function useSpotifyData() {
 
     const addMember = async (name: string, userId?: string) => {
         if (!name.trim() || !user) return;
+
+        // Calculate if new member should be VIP (exempt)
+        // Count members who are NOT exempt (paying members)
+        const payingMembersCount = members.filter(m => !m.isExempt).length;
+        const isExempt = payingMembersCount >= 6;
+
         const newId = Date.now().toString();
-        const newMember = { name: name.trim(), createdAt: Date.now(), userId };
+        const newMember = {
+            name: name.trim(),
+            createdAt: Date.now(),
+            userId,
+            isExempt
+        };
         try {
             const docRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'spotify_members', newId);
             await setDoc(docRef, newMember);
