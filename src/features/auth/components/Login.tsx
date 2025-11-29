@@ -17,7 +17,11 @@ export function Login({ onNavigate }: LoginProps) {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await signIn(email, password);
+            let loginEmail = email;
+            if (!email.includes('@')) {
+                loginEmail = `${email}@elprivado.app`;
+            }
+            await signIn(loginEmail, password);
             onNavigate('hub');
         } catch (error) {
             // Error is handled in context
@@ -55,15 +59,15 @@ export function Login({ onNavigate }: LoginProps) {
                         )}
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-300 ml-1">Email</label>
+                            <label className="text-sm font-medium text-gray-300 ml-1">Email o Usuario</label>
                             <div className="relative">
                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                                 <input
-                                    type="email"
+                                    type="text"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-transparent transition-all"
-                                    placeholder="tu@email.com"
+                                    placeholder="tu@email.com o usuario"
                                     required
                                 />
                             </div>

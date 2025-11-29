@@ -19,10 +19,11 @@ export function useSpotifyData() {
     }, []);
 
     useEffect(() => {
-        if (!user) {
-            setIsLoading(false);
-            return;
-        }
+        // Allow fetching data even if user is not logged in (Visitor Mode)
+        // if (!user) {
+        //     setIsLoading(false);
+        //     return;
+        // }
 
         const membersRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'spotify_members');
         const paymentsRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'spotify_payments');
