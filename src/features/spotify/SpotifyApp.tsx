@@ -16,8 +16,14 @@ export function SpotifyApp({ onBackToHub }: SpotifyAppProps) {
     const [currentDate, setCurrentDate] = useState(new Date());
     const isMobile = useIsMobile();
 
-    // Visitor mode: if no user is logged in
-    const isVisitor = !globalUser;
+    // Admin check: only Darwin47 is admin
+    const isAdmin = globalUser && (
+        globalUser.email === 'darwin47@elprivado.app' ||
+        globalUser.uid === 'darwin47-admin-bypass'
+    );
+
+    // Visitor mode: if no user is logged in OR user is not admin
+    const isVisitor = !isAdmin;
 
     const changeMonth = (offset: number) => {
         const newDate = new Date(currentDate);

@@ -143,7 +143,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             case 'auth/wrong-password':
                 return 'La contraseña es incorrecta.';
             case 'auth/email-already-in-use':
-                return 'Ya existe una cuenta con este correo electrónico.';
+                return 'Lo sentimos, pero parece que esta persona ya ha sido registrada.';
             case 'auth/weak-password':
                 return 'La contraseña debe tener al menos 6 caracteres.';
             case 'auth/missing-password':
