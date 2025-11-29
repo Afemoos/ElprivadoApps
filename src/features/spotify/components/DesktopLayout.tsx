@@ -6,6 +6,7 @@ import { PaymentList } from './PaymentList';
 import { HistoryReport } from './HistoryReport';
 import { WhatsAppButton } from './WhatsAppButton';
 import { Member, PaymentData, Request, UserRole } from '../../../types';
+import { VisitorRequest } from './VisitorRequest';
 
 interface DesktopLayoutProps {
     user: User | null;
@@ -28,6 +29,7 @@ interface DesktopLayoutProps {
     onRejectRequest: (requestId: string) => Promise<void>;
     onToggleExempt: (id: string, isExempt: boolean) => Promise<void>;
     inviteCode?: string;
+    onRequestSpot?: (name: string) => Promise<void>;
 }
 
 export function DesktopLayout({
@@ -50,7 +52,8 @@ export function DesktopLayout({
     onAcceptRequest,
     onRejectRequest,
     onToggleExempt,
-    inviteCode
+    inviteCode,
+    onRequestSpot
 }: DesktopLayoutProps) {
     return (
         <div className="flex h-screen bg-gradient-to-br from-black to-gray-900 font-sans text-white overflow-hidden">
@@ -113,6 +116,12 @@ export function DesktopLayout({
                         role={role}
                     />
 
+                    {role === 'visitor' && onRequestSpot && (
+                        <div className="flex-1 max-w-xl mx-auto px-4">
+                            <VisitorRequest onRequestSpot={onRequestSpot} />
+                        </div>
+                    )}
+
                     {role === 'admin' && inviteCode && (
                         <div className="hidden md:flex items-center gap-3 bg-indigo-500/10 border border-indigo-500/20 px-4 py-2 rounded-xl">
                             <span className="text-[10px] text-indigo-400 font-bold uppercase tracking-wider">Código de Grupo</span>
@@ -145,6 +154,7 @@ export function DesktopLayout({
                                         onMarkAsPaid={markAsPaid}
                                         onUndoPayment={undoPayment}
                                         isGuest={role !== 'admin'}
+                                        role={role}
                                     />
                                 </div>
                                 {role === 'admin' && (

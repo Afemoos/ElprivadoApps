@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { apps } from '../../config/apps';
 import { useAuth } from '../../context/AuthContext';
 import { useSpotifyData } from '../../hooks/useSpotifyData';
-import { VisitorRequest } from '../spotify/components/VisitorRequest';
-
 import { useGroups } from '../../context/GroupContext';
 import { LogOut, LogIn } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
@@ -21,16 +19,12 @@ export function Lobby({ onSelectApp, onNavigateToAuth }: LobbyProps) {
     const { user, logOut } = useAuth();
     const [showInfoModal, setShowInfoModal] = useState(false);
     const { groups, currentGroup, selectGroup, createGroup, joinGroupByCode, loadGroupForVisitor } = useGroups();
-    const { members, payments, requestSpot } = useSpotifyData(currentGroup?.id);
+    const { members, payments } = useSpotifyData(currentGroup?.id);
 
     const [newGroupName, setNewGroupName] = useState('');
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
     const [joinCode, setJoinCode] = useState('');
     const [isJoining, setIsJoining] = useState(false);
-    const [visitorCode, setVisitorCode] = useState('');
-    const [loadingVisitor, setLoadingVisitor] = useState(false);
-
-
     const [showVisitorPrompt, setShowVisitorPrompt] = useState(false);
 
     const handleAppClick = (appId: string) => {
@@ -40,10 +34,6 @@ export function Lobby({ onSelectApp, onNavigateToAuth }: LobbyProps) {
         }
         onSelectApp(appId);
     };
-
-    // The handleVisitorSubmit function is now handled by the VisitorPrompt component internally
-    // The useEffect for fetching gym data is now handled by the UserInfoModal component internally
-    // The getSpotifyStatus function is now handled by the UserInfoModal component internally
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-950 to-slate-900 flex flex-col font-sans text-white relative overflow-hidden">
@@ -107,43 +97,6 @@ export function Lobby({ onSelectApp, onNavigateToAuth }: LobbyProps) {
                     members={members}
                     payments={payments}
                 />
-            )}
-
-            {/* Visitor Request for unlinked users */}
-            {user && !currentGroup && (
-                <div className="w-full max-w-md mx-auto px-6 mt-8 z-20 relative space-y-8">
-                    <VisitorRequest onRequestSpot={requestSpot} />
-
-                    {/* Visitor Code Access */}
-                    <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                        <h3 className="text-lg font-bold text-white mb-4 text-center">¿Tienes un código de invitado?</h3>
-                        <div className="flex gap-2">
-                            <input
-                                type="text"
-                                placeholder="Código (ej. ABC123)"
-                                value={visitorCode}
-                                onChange={(e) => setVisitorCode(e.target.value.toUpperCase())}
-                                className="flex-1 bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-white uppercase text-center"
-                                maxLength={6}
-                            />
-                            <button
-                                onClick={async () => {
-                                    if (visitorCode.length < 6) return;
-                                    setLoadingVisitor(true);
-                                    const success = await loadGroupForVisitor(visitorCode);
-                                    if (!success) {
-                                        alert("Código no encontrado");
-                                    }
-                                    setLoadingVisitor(false);
-                                }}
-                                disabled={loadingVisitor || visitorCode.length < 6}
-                                className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl font-bold transition-colors disabled:opacity-50"
-                            >
-                                {loadingVisitor ? '...' : 'Ver'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
             )}
 
             <div className="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-4xl mx-auto space-y-12 pb-20">

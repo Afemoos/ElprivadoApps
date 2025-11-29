@@ -24,7 +24,8 @@ export function SpotifyApp({ onBackToHub }: SpotifyAppProps) {
         globalUser.email === ADMIN_CONFIG.email
     );
 
-    const role: 'admin' | 'member' | 'visitor' = isAdmin ? 'admin' : (globalUser ? 'member' : 'visitor');
+    const isMember = members.some(m => m.userId === globalUser?.uid);
+    const role: 'admin' | 'member' | 'visitor' = isAdmin ? 'admin' : (isMember ? 'member' : 'visitor');
 
     // Display Invite Code for Admins
     if (role === 'admin' && currentGroup?.inviteCode) {
