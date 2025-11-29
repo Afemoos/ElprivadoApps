@@ -10,6 +10,7 @@ interface LoginProps {
 export function Login({ onNavigate }: LoginProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
     const { signIn, error, loading } = useAuth();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -23,7 +24,7 @@ export function Login({ onNavigate }: LoginProps) {
                 loginEmail = `${email}@elprivado.app`;
             }
             console.log("Login email:", loginEmail);
-            await signIn(loginEmail, password);
+            await signIn(loginEmail, password, rememberMe);
             console.log("Login successful, navigating...");
             onNavigate('hub');
         } catch (error) {
@@ -90,7 +91,25 @@ export function Login({ onNavigate }: LoginProps) {
                                     required
                                 />
                             </div>
-                            <div className="flex justify-end">
+                            <div className="flex items-center justify-between">
+                                <label className="flex items-center space-x-2 cursor-pointer group">
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            checked={rememberMe}
+                                            onChange={(e) => setRememberMe(e.target.checked)}
+                                            className="sr-only peer"
+                                        />
+                                        <div className="w-5 h-5 border-2 border-gray-600 rounded-md peer-checked:bg-green-500 peer-checked:border-green-500 transition-all bg-black/20 group-hover:border-gray-500"></div>
+                                        <div className="absolute inset-0 flex items-center justify-center text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">
+                                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <span className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors select-none">Mantener sesión iniciada</span>
+                                </label>
+
                                 <button
                                     type="button"
                                     onClick={() => onNavigate('forgot-password')}
