@@ -105,7 +105,7 @@ export function useRecocho() {
         return () => unsubscribe();
     }, [currentGame?.id]);
 
-    const createGame = async (params: CreateRecochoParams): Promise<string | null> => {
+    const createGame = async (params: CreateRecochoParams): Promise<{ id: string, adminCode: string } | null> => {
         setLoading(true);
         setError(null);
         try {
@@ -122,8 +122,11 @@ export function useRecocho() {
             }
 
             const code = generateCode();
+            const adminCode = generateCode(); // Generate separate admin code
+
             const newGame: Omit<RecochoGame, 'id'> = {
                 code,
+                adminCode,
                 createdAt: Date.now(),
                 teamSize: params.teamSize,
                 pitchPrice: params.pitchPrice,
@@ -134,14 +137,11 @@ export function useRecocho() {
 
             const docRef = await addDoc(collection(db, 'recochos'), newGame);
 
-            // Save ownership locally for guest users
+            // Save ownership locally for guest users (using ID for persistence)
             localStorage.setItem(`recocho_owner_${docRef.id}`, 'true');
 
-            // We don't set currentGame here, the caller (RecochoApp) should handle navigation/joining
-            // But to trigger the subscription, we need to set it.
-            // Let's set it here so the effect picks it up.
             setCurrentGame({ id: docRef.id, ...newGame } as RecochoGame);
-            return docRef.id;
+            return { id: docRef.id, adminCode };
         } catch (err) {
             console.error("Error creating game:", err);
             setError("No se pudo crear la sala");
@@ -151,31 +151,53 @@ export function useRecocho() {
         }
     };
 
-    const joinGame = async (code: string): Promise<boolean> => {
+    const joinGame = async (code: string): Promise<{ success: boolean, isAdmin: boolean }> => {
         setLoading(true);
         setError(null);
         try {
-            const q = query(
+            // Check if it's a public code
+            let q = query(
                 collection(db, 'recochos'),
                 where('code', '==', code.toUpperCase()),
                 where('status', '==', 'active'),
                 limit(1)
             );
-            const snapshot = await getDocs(q);
+            let snapshot = await getDocs(q);
+            let isAdmin = false;
+
+            // If not found, check if it's an admin code
+            if (snapshot.empty) {
+                q = query(
+                    collection(db, 'recochos'),
+                    where('adminCode', '==', code.toUpperCase()),
+                    where('status', '==', 'active'),
+                    limit(1)
+                );
+                snapshot = await getDocs(q);
+                if (!snapshot.empty) {
+                    isAdmin = true;
+                }
+            }
 
             if (snapshot.empty) {
                 setError("Sala no encontrada o inactiva");
-                return false;
+                return { success: false, isAdmin: false };
             }
 
             const gameDoc = snapshot.docs[0];
-            // Setting current game will trigger the useEffect subscription
-            setCurrentGame({ id: gameDoc.id, ...gameDoc.data() } as RecochoGame);
-            return true;
+            const gameData = { id: gameDoc.id, ...gameDoc.data() } as RecochoGame;
+
+            // If admin, save local ownership
+            if (isAdmin) {
+                localStorage.setItem(`recocho_owner_${gameDoc.id}`, 'true');
+            }
+
+            setCurrentGame(gameData);
+            return { success: true, isAdmin };
         } catch (err) {
             console.error("Error joining game:", err);
             setError("Error al unirse a la sala");
-            return false;
+            return { success: false, isAdmin: false };
         } finally {
             setLoading(false);
         }

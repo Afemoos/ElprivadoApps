@@ -9,6 +9,7 @@ export interface RecochoPlayer {
 export interface RecochoGame {
     id: string;
     code: string;
+    adminCode: string;
     createdAt: number;
     teamSize: number; // 5 to 11
     pitchPrice: number;

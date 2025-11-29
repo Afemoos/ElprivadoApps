@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Share2, Trash2, Plus, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Share2, Trash2, Plus, Edit2, Settings } from 'lucide-react';
 import { RecochoGame } from '../types';
 
 interface GameRoomProps {
@@ -47,7 +47,7 @@ export function GameRoom({ game, onAddPlayer, onRemovePlayer, onUpdatePrice, onD
     };
 
     const shareOnWhatsApp = () => {
-        const message = `⚽ *Nuevo Recocho*\n\nCódigo de sala: *${game.code}*\nFormato: ${game.teamSize} vs ${game.teamSize}\n\nÚnete aquí para jugar!`;
+        const message = `⚽ * Nuevo Recocho *\n\nCódigo de sala: * ${game.code}*\nFormato: ${game.teamSize} vs ${game.teamSize} \n\nÚnete aquí para jugar!`;
         const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
     };
@@ -69,6 +69,17 @@ export function GameRoom({ game, onAddPlayer, onRemovePlayer, onUpdatePrice, onD
                                     {game.code}
                                 </span>
                             </div>
+                            {isOwner && (
+                                <div className="mt-2 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+                                    <span className="text-red-400 text-xs uppercase tracking-widest font-bold flex items-center gap-1">
+                                        <Settings className="w-3 h-3" />
+                                        Admin:
+                                    </span>
+                                    <span className="font-mono font-bold text-red-400 select-all text-sm bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">
+                                        {game.adminCode}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -91,9 +102,10 @@ export function GameRoom({ game, onAddPlayer, onRemovePlayer, onUpdatePrice, onD
                             ) : (
                                 <button
                                     onClick={() => isOwner && setIsEditingPrice(true)}
-                                    className={`text-xl md:text-2xl font-bold transition-colors ${isOwner ? 'hover:text-green-400 cursor-pointer' : 'cursor-default'} ${game.pitchPrice === 0 ? 'text-yellow-400' : 'text-white'}`}
+                                    className={`flex items-center gap-2 text-xl md:text-2xl font-bold transition-colors ${isOwner ? 'hover:text-green-400 cursor-pointer' : 'cursor-default'} ${game.pitchPrice === 0 ? 'text-yellow-400' : 'text-white'}`}
                                 >
                                     {game.pitchPrice === 0 ? 'Por definir' : `$${game.pitchPrice.toLocaleString()}`}
+                                    {isOwner && <Edit2 className="w-4 h-4 opacity-50" />}
                                 </button>
                             )}
                         </div>
