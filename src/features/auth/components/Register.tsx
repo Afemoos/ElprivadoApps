@@ -58,7 +58,11 @@ export function Register({ onNavigate }: RegisterProps) {
 
         setIsSubmitting(true);
         try {
-            await signUp(email, password);
+            let registerEmail = email;
+            if (!email.includes('@')) {
+                registerEmail = `${email}@elprivado.app`;
+            }
+            await signUp(registerEmail, password);
 
             // Link user to member
             const memberRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'spotify_members', selectedMemberId);
@@ -149,15 +153,15 @@ export function Register({ onNavigate }: RegisterProps) {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-300 ml-1">Email</label>
+                            <label className="text-sm font-medium text-gray-300 ml-1">Email o Usuario</label>
                             <div className="relative">
                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                                 <input
-                                    type="email"
+                                    type="text"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-transparent transition-all"
-                                    placeholder="tu@email.com"
+                                    placeholder="tu@email.com o usuario"
                                     required
                                 />
                             </div>
